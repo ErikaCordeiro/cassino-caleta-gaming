@@ -6,15 +6,15 @@ class Player(models.Model):
     email = models.EmailField(unique=True)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     
-def __str__(self):
-    return self.username
+    def __str__(self):
+        return self.username
 
 class Transaction(models.Model):
     TRANSACTION_TYPES = (
         ('bet', 'Bet'),
         ('win', 'Win'),
         ('deposit', 'Deposit'),
-        ('rollback', 'Rollback'),
+        ('rollback', 'Rollback'), 
     )
 
     player = models.ForeignKey(Player, on_delete=models.CASCADE)
@@ -22,6 +22,6 @@ class Transaction(models.Model):
     transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
     timestamp = models.DateTimeField(auto_now_add=True)
 
-def __str__(self):
-    return f"{self.transaction_type} - {self.value} by {self.player.username}"
+    def __str__(self):
+        return f"{self.transaction_type} - {self.value} by {self.player.username}"
 

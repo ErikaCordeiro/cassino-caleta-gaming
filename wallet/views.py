@@ -7,6 +7,8 @@ from django.http import Http404
 def index_view(request):
     return JsonResponse({"message": "Welcome to the wallet app!"})
 
+from django.http import JsonResponse
+
 @csrf_exempt
 def balance_view(request):
     if request.method == 'GET':
@@ -15,7 +17,8 @@ def balance_view(request):
             player = Player.objects.get(pk=player_id)
             return JsonResponse({"player": player.player_id, "balance": player.balance})
         except Player.DoesNotExist:
-            raise Http404("Player does not exist")
+            return JsonResponse({"error": "Player does not exist"}, status=404)
+
 
 # Endpoint para realizar uma aposta
 @csrf_exempt
@@ -69,6 +72,10 @@ def rollback_view(request):
                 player.save()
                 transaction.delete()  
                 return JsonResponse({"code": "OK", "balance": player.balance})
+            elif transaction.transaction_type == 'deposit':
+                return JsonResponse({"code": "Invalid"})
+            elif transaction.transaction_type == 'rollback':
+                return JsonResponse({"code": "AlreadyCancelled"})
             else:
                 return JsonResponse({"code": "Invalid"})
         
